@@ -15,19 +15,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class FieldCentricMecanumTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        // Declare our motors
-        // Make sure your ID's match your configuration
-        // By setting these values to new Gamepad(), they will default to all
-        // boolean values as false and all float values as 0
-        Gamepad currentGamepad1 = new Gamepad();
-        Gamepad currentGamepad2 = new Gamepad();
+        if (opModeInInit()) {
+            // Declare our motors
+            // Make sure your ID's match your configuration
+            // By setting these values to new Gamepad(), they will default to all
+            // boolean values as false and all float values as 0
+            Gamepad currentGamepad1 = new Gamepad();
+            Gamepad currentGamepad2 = new Gamepad();
 
-        Gamepad previousGamepad1 = new Gamepad();
-        Gamepad previousGamepad2 = new Gamepad();
+            Gamepad previousGamepad1 = new Gamepad();
+            Gamepad previousGamepad2 = new Gamepad();
 
-        // other initialization code goes here
+            // other initialization code goes here
 
-        while (opModeIsActive()) {
+
             // Store the gamepad values from the previous loop iteration in
             // previousGamepad1/2 to be used in this loop iteration.
             // This is equivalent to doing this at the end of the previous
@@ -47,12 +48,12 @@ public class FieldCentricMecanumTeleOp extends LinearOpMode {
             DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
             DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
             DcMotor backRight = hardwareMap.dcMotor.get("backRight");
-            DcMotor Leftdepo = hardwareMap.dcMotor.get("leftdepo");
-            DcMotor Rightdepo = hardwareMap.dcMotor.get("Rightdepo");
-            DcMotor Intake = hardwareMap.dcMotor.get("Intake");
-            Servo outtakeclawServo = hardwareMap.servo.get("outtakeclaw");
+//            DcMotor Leftdepo = hardwareMap.dcMotor.get("leftdepo");
+//            DcMotor Rightdepo = hardwareMap.dcMotor.get("Rightdepo");
+//            DcMotor Intake = hardwareMap.dcMotor.get("Intake");
+            // Servo outtakeclawServo = hardwareMap.servo.get("outtakeclaw");
             Servo intakeClaw = hardwareMap.servo.get("intakeClaw");
-            Servo intakewrist = hardwareMap.servo.get("intakewrist");
+            // Servo intakewrist = hardwareMap.servo.get("intakewrist");
 
             boolean intakeToggle = false;
             // Reverse the right side motors. This may be wrong for your setup.
@@ -73,7 +74,8 @@ public class FieldCentricMecanumTeleOp extends LinearOpMode {
 
             waitForStart();
 
-            if (isStopRequested()) return;
+            if (isStopRequested())
+                return;
 
             while (opModeIsActive()) {
                 double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
