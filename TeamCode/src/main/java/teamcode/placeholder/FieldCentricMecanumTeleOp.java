@@ -71,63 +71,63 @@ public class FieldCentricMecanumTeleOp extends LinearOpMode {
                     RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
             // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
             imu.initialize(parameters);
+        }
+                waitForStart();
 
-            waitForStart();
+                    if (isStopRequested()) {
+                        return;
+                    }
+                        while (opModeIsActive()) {
+                            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+                            double x = gamepad1.left_stick_x;
+                            double rx = gamepad1.right_stick_x;
 
-            if (isStopRequested())
-                return;
+                            // This button choice was made so that it is hard to hit on accident,
+                            // it can be freely changed based on preference.
+                            // The equivalent button is start on Xbox-style controllers.
+                            if (gamepad1.options) {
+                                imu.resetYaw();
+                            }
 
-            while (opModeIsActive()) {
-                double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-                double x = gamepad1.left_stick_x;
-                double rx = gamepad1.right_stick_x;
+                            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-                // This button choice was made so that it is hard to hit on accident,
-                // it can be freely changed based on preference.
-                // The equivalent button is start on Xbox-style controllers.
-                if (gamepad1.options) {
-                    imu.resetYaw();
-                }
+                            // Rotate the movement direction counter to the bot's rotation
+                            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-                double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                            rotX = rotX * 1.1;  // Counteract imperfect strafing
 
-                // Rotate the movement direction counter to the bot's rotation
-                double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-                double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+                            // Denominator is the largest motor power (absolute value) or 1
+                            // This ensures all the powers maintain the same ratio,
+                            // but only if at least one is out of the range [-1, 1]
+                            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                            double frontLeftPower = (rotY + rotX + rx) / denominator;
+                            double backLeftPower = (rotY - rotX + rx) / denominator;
+                            double frontRightPower = (rotY - rotX - rx) / denominator;
+                            double backRightPower = (rotY + rotX - rx) / denominator;
 
-                rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-                // Denominator is the largest motor power (absolute value) or 1
-                // This ensures all the powers maintain the same ratio,
-                // but only if at least one is out of the range [-1, 1]
-                double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-                double frontLeftPower = (rotY + rotX + rx) / denominator;
-                double backLeftPower = (rotY - rotX + rx) / denominator;
-                double frontRightPower = (rotY - rotX - rx) / denominator;
-                double backRightPower = (rotY + rotX - rx) / denominator;
-
-                frontLeftMotor.setPower(frontLeftPower);
-                backLeft.setPower(backLeftPower);
-                frontRight.setPower(frontRightPower);
-                backRight.setPower(backRightPower);
+                            frontLeftMotor.setPower(frontLeftPower);
+                            backLeft.setPower(backLeftPower);
+                            frontRight.setPower(frontRightPower);
+                            backRight.setPower(backRightPower);
 
 
-                // Rising edge detector
-                if (currentGamepad1.circle && !previousGamepad1.circle) {
-                    // This will set intakeToggle to true if it was previously false
-                    // and intakeToggle to false if it was previously true,
-                    // providing a toggling behavior.
-                    intakeToggle = !intakeToggle;
-                }
+                            // Rising edge detector
+                            if (gamepad1.circleWasPressed()) {
+                                // This will set intakeToggle to true if it was previously false
+                                // and intakeToggle to false if it was previously true,
+                                // providing a toggling behavior.
+                                intakeToggle = !intakeToggle;
+                            }
 
 // Using the toggle variable to control the robot.
-                if (intakeToggle) {
-                    intakeClaw.setPosition(.85);
-                } else {
-                    intakeClaw.setPosition(.34);
-                }
+                            if (intakeToggle) {
+                                intakeClaw.setPosition(.85);
+                            } else {
+                                intakeClaw.setPosition(.34);
+                            }
 
+                        }
+                    }
+                }
             }
-        }
-    }
-}
