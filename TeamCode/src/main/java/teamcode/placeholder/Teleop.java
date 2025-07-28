@@ -16,7 +16,7 @@ public class Teleop extends LinearOpMode {
     public DcMotor backLeft;
     public DcMotor backRight;
     public Servo clawServo;
-
+    public IMU imu;
     //change this var based on whether u want the claw open or closed when u start the program
     public boolean intakeToggle = false;
 
@@ -29,7 +29,7 @@ public class Teleop extends LinearOpMode {
             backRight = hardwareMap.get(DcMotor.class, "backRight");
             clawServo = hardwareMap.get(Servo.class, "intakeClaw");
             // ur IMU code or wtvr, sry i dont feel like copy pasting it here
-            IMU imu = hardwareMap.get(IMU.class, "imu");
+             imu = hardwareMap.get(IMU.class, "imu");
             // Adjust the orientation parameters to match your robot
             IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -40,17 +40,15 @@ public class Teleop extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             // code for the drive, sry im lazy
-            y = gamepad1.left_stick_y;
-            x = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
+           double y = gamepad1.left_stick_y;
+           double x = gamepad1.left_stick_x;
+           double rx = gamepad1.right_stick_x;
 
-            frontLeft.setPower(//power);
-                    //etc
-            if (gamepad1.options) {
-                IMU.resetYaw();
+                       if (gamepad1.options) {
+                imu.resetYaw();
             }
 
-            double botHeading = IMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -77,9 +75,9 @@ public class Teleop extends LinearOpMode {
                 intakeToggle = !intakeToggle;
             }
             if (intakeToggle) {
-                clawServo.setPosition(/*position*/);
+                clawServo.setPosition(.85);
             } else {
-                clawServo.setPosition(/*position*/);
+                clawServo.setPosition(.34);
             }
         }
     }
