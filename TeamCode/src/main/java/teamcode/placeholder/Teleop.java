@@ -75,13 +75,16 @@ public class Teleop extends LinearOpMode {
             frontRight.setPower(frontRightPower);
             backRight.setPower(backRightPower);
 
+            double mp = 0;
             if (gamepad1.left_trigger > .1) {
-                intakeMotor.setPower(1);
-                } else if (gamepad1.right_trigger > .1) {
-                    intakeMotor.setPower(-1);
-                } else intakeMotor.setPower(0);
+                mp = gamepad1.left_trigger;
 
+            } else if (gamepad1.right_trigger > .1) {
+                mp = -1 * gamepad1.right_trigger;
+            }
+                intakeMotor.setPower(mp);
 
+                //intakeMotor.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
                 if (gamepad1.circleWasPressed()) {
                     intakeToggle = !intakeToggle;
                 }
@@ -92,5 +95,4 @@ public class Teleop extends LinearOpMode {
                 }
             }
         }
-
     }
