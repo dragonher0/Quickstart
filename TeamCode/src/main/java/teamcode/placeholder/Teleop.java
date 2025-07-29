@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @TeleOp 
 public class Teleop extends LinearOpMode {
     //Declare vars
-    public  DcMotor frontLeft;
+    public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
@@ -33,9 +33,9 @@ public class Teleop extends LinearOpMode {
             backRight = hardwareMap.get(DcMotor.class, "backRight");
             clawServo = hardwareMap.get(Servo.class, "intakeClaw");
             intakeMotor = hardwareMap.get(DcMotor.class, "Horz");
-            outtakeMotortop = hardwareMap.get(DcMotor.class, "outtakeTop");
-            outtakeMotorbottom = hardwareMap.get(DcMotor.class, "outtakebottom");
-             imu = hardwareMap.get(IMU.class, "imu");
+            // outtakeMotortop = hardwareMap.get(DcMotor.class, "outtakeTop");
+            //outtakeMotorbottom = hardwareMap.get(DcMotor.class, "outtakebottom");
+            imu = hardwareMap.get(IMU.class, "imu");
             // Adjust the orientation parameters to match your robot
             IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -45,11 +45,11 @@ public class Teleop extends LinearOpMode {
         }
         waitForStart();
         while (opModeIsActive()) {
-           double y = gamepad1.left_stick_y;
-           double x = gamepad1.left_stick_x;
-           double rx = gamepad1.right_stick_x;
+            double y = gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
 
-                       if (gamepad1.options) {
+            if (gamepad1.options) {
                 imu.resetYaw();
             }
 
@@ -75,16 +75,25 @@ public class Teleop extends LinearOpMode {
             frontRight.setPower(frontRightPower);
             backRight.setPower(backRightPower);
 
+            if (gamepad1.left_trigger > .4) {
+                intakeMotor.setPower(.5);
+                if (gamepad1.left_trigger > .8) {
+                    intakeMotor.setPower(1);
+                } else if (gamepad1.right_trigger > .1) {
+                    intakeMotor.setPower(-1);
+                } else intakeMotor.setPower(0);
 
-            if (gamepad1.circleWasPressed()) {
-                intakeToggle = !intakeToggle;
-            }
-            if (intakeToggle) {
-                clawServo.setPosition(.85);
-            } else {
-                clawServo.setPosition(.34);
+
+                if (gamepad1.circleWasPressed()) {
+                    intakeToggle = !intakeToggle;
+                }
+                if (intakeToggle) {
+                    clawServo.setPosition(.85);
+                } else {
+                    clawServo.setPosition(.34);
+                }
             }
         }
-    }
 
+    }
 }
