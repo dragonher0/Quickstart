@@ -75,10 +75,8 @@ public class Teleop extends LinearOpMode {
             frontRight.setPower(frontRightPower);
             backRight.setPower(backRightPower);
 
-            if (gamepad1.left_trigger > .4) {
-                intakeMotor.setPower(.5);
-                if (gamepad1.left_trigger > .8) {
-                    intakeMotor.setPower(1);
+            if (gamepad1.left_trigger > .1) {
+                intakeMotor.setPower(1);
                 } else if (gamepad1.right_trigger > .1) {
                     intakeMotor.setPower(-1);
                 } else intakeMotor.setPower(0);
